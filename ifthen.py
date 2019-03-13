@@ -5,7 +5,7 @@ import argparse
 
 class Statement:
     REGEX_IF = re.compile(r'if\s+(.*\s*=\s*.*)\s+then', re.I)
-    REGEX_THEN = re.compile(r'then\s+(.+\s*=\s*.*);.*$', re.I)
+    REGEX_THEN = re.compile(r'then\s+(.+);', re.I)
     REGEX_RIGHT = re.compile(r'right\s*\((.+)\)', re.I)
 
     def __init__(self, input_text, line_num):

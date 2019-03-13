@@ -1,7 +1,7 @@
-If #234 = "0000" then $850.#PARTN = "4"
+If #234 = "0000" then $850.#PARTN = "L23234";
 
-if #234 = "0000" then $850.#PARTN = "5"
+if #234 = "0000" then $850.#PARTN = "L232345";
 
-if #shipto_duns:2 = '0000' then #shipto_duns:3 = 4;
+if #shipto_duns:2 = "0000" then #shipto_duns:3 = 4;
 
-if #shipto_duns:2 = '0000' then #shipto_duns:3 = 5; // dsdsds
+if #shipto_duns:2 = "0000" then #shipto_duns:3 = 5; // dsdsds
