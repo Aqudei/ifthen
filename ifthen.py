@@ -54,7 +54,7 @@ class Statement:
         if self.then_expression:
             print(self.then_expression)
             left, right = self.then_expression.split('=')
-            context[left.strip()] = right.strip('"')
+            context[self.str_clen(left)] = self.str_clen(right) 
 
     def execute(self, context):
         print(self)
@@ -83,7 +83,7 @@ class Statement:
                 self.__execute_then(context)
 
     def str_clen(self, text):
-        return text.strip(" \t\r\n\"")
+        return text.strip(" \t\r\n\"").strip()
 
     def __str__(self):
         return '{}] {}\n\tif: {}\n\tthen: {}'.format(self.line_num, self.input_text, self.if_expression, self.then_expression)
