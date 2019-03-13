@@ -5,7 +5,7 @@ import argparse
 
 class Statement:
     REGEX_IF = re.compile(r'if\s+(.*\s*=\s*.*)\s+then', re.I)
-    REGEX_THEN = re.compile(r'then\s+(.*\s*=\s*.*);.*$', re.I)
+    REGEX_THEN = re.compile(r'then\s+(.+\s*=\s*.*);.*$', re.I)
     REGEX_RIGHT = re.compile(r'right\s*\((.+)\)', re.I)
 
     def __init__(self, input_text, line_num):
@@ -52,11 +52,13 @@ class Statement:
     def __execute_then(self, context):
         print('trying then expression of {}'.format(self.input_text))
         if self.then_expression:
-
+            print(self.then_expression)
             left, right = self.then_expression.split('=')
             context[left.strip()] = right.strip('"')
 
     def execute(self, context):
+        print(self)
+
         left, right = self.if_expression.split('=')
         check_value = None
 
@@ -77,6 +79,7 @@ class Statement:
             print('Comparing {} == {}'.format(
                 context[self.str_clen(left)], self.str_clen(right)))
             if context[self.str_clen(left)] == self.str_clen(right):
+                print('Executing then')
                 self.__execute_then(context)
 
     def str_clen(self, text):
