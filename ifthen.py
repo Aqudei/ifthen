@@ -29,7 +29,6 @@ class Statement:
 
         exp = self.REGEX_RIGHT.search(expression.strip())
         if exp:
-            print('found RIGHT STATEMENT: {}'.format(expression))
             left, right = exp.group(1).split(",")
             if not self.str_clen(left) in context:
                 value = input(
@@ -50,15 +49,11 @@ class Statement:
         return False
 
     def __execute_then(self, context):
-        print('trying then expression of {}'.format(self.input_text))
         if self.then_expression:
-            print(self.then_expression)
             left, right = self.then_expression.split('=')
             context[self.str_clen(left)] = self.str_clen(right) 
 
     def execute(self, context):
-        print(self)
-
         left, right = self.if_expression.split('=')
         check_value = None
 
@@ -66,7 +61,6 @@ class Statement:
             has_value, check_value = func(self.if_expression, context)
 
         if has_value and check_value:
-            print('im calling  function')
             self.__execute_then(context)
             return
 
@@ -76,10 +70,7 @@ class Statement:
                     'Please enter value for {}: '.format(self.str_clen(left)))
                 context[self.str_clen(left)] = self.str_clen(value)
 
-            print('Comparing {} == {}'.format(
-                context[self.str_clen(left)], self.str_clen(right)))
             if context[self.str_clen(left)] == self.str_clen(right):
-                print('Executing then')
                 self.__execute_then(context)
 
     def str_clen(self, text):
@@ -94,7 +85,6 @@ def read_file(filename, context):
 
     begin = False
 
-    print('reading {}'.format(filename))
     with open(filename, 'rt') as fp:
         for idx, line in enumerate(fp.readlines()):
             #print('processing line {}'.format(line))
@@ -126,4 +116,6 @@ if __name__ == "__main__":
             statements = read_file(filename, context)
             for statement in statements:
                 statement.execute(context)
+                
+            print('Result: ')    
             print(context)
