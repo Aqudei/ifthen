@@ -3,29 +3,10 @@ import re
 import argparse
 
 
-REGEX_RIGHT = re.compile(r'right\s*\((.+)\)', re.I)
-
-
-def func_right(expression, context):
-
-    exp = REGEX_RIGHT.search(expression.strip())
-    if exp:
-
-        print('found RIGHT STATEMENT: {}'.format(expression))
-        left, right = exp.group(1).split(",")
-
-        if not left.strip() in context:
-            value = input('Please enter value for {}: '.format(left.strip()))
-            context[left.strip()] = value
-
-        return True, right.strip() == context[left.strip()][0:int(right.strip())]
-
-    return False, None
-
-
 class Statement:
     REGEX_IF = re.compile(r'if\s+(.*\s*=\s*.*)\s+then', re.I)
     REGEX_THEN = re.compile(r'then\s+(.*\s*=\s*.*);.*$', re.I)
+    REGEX_RIGHT = re.compile(r'right\s*\((.+)\)', re.I)
 
     def __init__(self, input_text, line_num):
         self.input_text = input_text
@@ -34,7 +15,7 @@ class Statement:
         self.if_expression = ''
         self.then_expression = ''
 
-        self.funcs = [func_right, ]
+        self.funcs = [self.func_right, ]
 
         rslt = self.REGEX_IF.search(input_text)
         if rslt:
@@ -43,6 +24,21 @@ class Statement:
         rslt = self.REGEX_THEN.search(input_text)
         if rslt:
             self.then_expression = rslt.group(1).strip()
+
+    def func_right(self, expression, context):
+
+        exp = self.REGEX_RIGHT.search(expression.strip())
+        if exp:
+            print('found RIGHT STATEMENT: {}'.format(expression))
+            left, right = exp.group(1).split(",")
+            if not self.str_clen(left) in context:
+                value = input(
+                    'Please enter value for {}: '.format(self.str_clen(left)))
+                context[self.str_clen(left)] = self.str_clen(value)
+
+            return True, self.str_clen(right) == context[self.str_clen(left)][0:int(self.str_clen(right))]
+
+        return False, None
 
     def should_true(self, context):
         if not self.if_expression:
@@ -56,9 +52,9 @@ class Statement:
     def __execute_then(self, context):
         print('trying then expression of {}'.format(self.input_text))
         if self.then_expression:
-            
+
             left, right = self.then_expression.split('=')
-            context[left.strip()] = right.strip()
+            context[left.strip()] = right.strip('"')
 
     def execute(self, context):
         left, right = self.if_expression.split('=')
@@ -73,13 +69,18 @@ class Statement:
             return
 
         if not has_value:
-            if not left.strip() in context:
-                value = input('Please enter value for {}: '.format(left.strip()))
-                context[left.strip()] = value
+            if not self.str_clen(left) in context:
+                value = input(
+                    'Please enter value for {}: '.format(self.str_clen(left)))
+                context[self.str_clen(left)] = self.str_clen(value)
 
-            print('Comparing {} == {}'.format(context[left.strip()], right.strip()))
-            if context[left.strip()] == right.strip():
+            print('Comparing {} == {}'.format(
+                context[self.str_clen(left)], self.str_clen(right)))
+            if context[self.str_clen(left)] == self.str_clen(right):
                 self.__execute_then(context)
+
+    def str_clen(self, text):
+        return text.strip(" \t\r\n\"")
 
     def __str__(self):
         return '{}] {}\n\tif: {}\n\tthen: {}'.format(self.line_num, self.input_text, self.if_expression, self.then_expression)
